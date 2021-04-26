@@ -18,8 +18,15 @@ def index():
                 item['status'] = 'Not Started'
             save_item(item)
         
-    return render_template('index.html', items = sorted(get_items(), key=lambda k: k['status'], reverse=True))
+    return display_index()
 
+@app.route('/items/<id>', methods=['POST'])
+def delete_item(id):
+    delete_item_whose_id_is(id)
+    return display_index()
+
+def display_index():
+    return render_template('index.html', items = sorted(get_items(), key=lambda k: k['status'], reverse=True))
 
 if __name__ == '__main__':
     app.run()

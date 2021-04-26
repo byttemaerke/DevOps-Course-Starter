@@ -67,3 +67,23 @@ def save_item(item):
     session['items'] = updated_items
 
     return item
+
+
+def delete_item_whose_id_is(id):
+    """
+    Deletes an existing item in the session.
+
+    Args:
+        id: The unique identifier of the item to be deleted
+    """
+    is_deleted = False
+    i = 0
+    existing_items = get_items()
+
+    while is_deleted == False and i < len(existing_items):
+        if existing_items[i]['id'] == int(id):
+            del existing_items[i]
+            is_deleted = True
+        i += 1
+    
+    session['items'] = existing_items
