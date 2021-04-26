@@ -2,31 +2,40 @@
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
-  <div class="jumbotron">
-    <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
-  </div>
+<div class="jumbotron">
+  <h1 class="display-4">To-Do App</h1>
+  <p class="lead">Just another to-do app.</p>
+</div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Items</h2>
-      <div class="row">
-        <div class="col-md-12">
-          <form action="/" method="post" class="form-add-item">
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" name="title" id="title" placeholder="Enter the title of the item to be added here" required>
-              <div class="input-group-append">
-                <input type="submit" value="Add Item" class="btn btn-primary">
-              </div>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Items</h2>
+    <div class="row">
+      <div class="col-md-12">
+        <form action="/" method="post" class="form-group">
+          <div class="input-group mb-3">
+            <input class="form-control" type="text" name="item-title" id="item-title" placeholder="Enter the title of the item to be added here" required>
+            <div class="input-group-append">
+              <input type="submit" value="Add Item" class="btn btn-primary">
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
-      <ul class="list-group mb-4">
-       {% for item in items %}
-       <li class="list-group-item">{{ item.title }}</li>
-       {% endfor %}
-      </ul>
     </div>
+    <ul class="list-group mb-4">
+      {% for item in items %}
+      <li class="list-group-item">
+        <form action="/" method="post" class="form-check">
+          <input class="form-check-input" type="checkbox" name="item-status" id="item-status" value="{{ item.id }}" onclick="submit()">
+          {% if item.status == 'Not Started' %}
+          <label class="form-check-label" for="item-status">{{ item.title }}</label>
+          {% else %}
+          <label class="form-check-label text-muted" for="item-status"><del>{{ item.title }}</del></label>
+          {% endif %}
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
+</div>
 {% endblock %}
