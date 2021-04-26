@@ -18,7 +18,7 @@ def index():
                 item['status'] = 'Not Started'
             save_item(item)
         
-    return render_template('index.html', items = get_items())
+    return render_template('index.html', items = sorted(get_items(), key=lambda k: k['status'], reverse=True))
 
 
 if __name__ == '__main__':
