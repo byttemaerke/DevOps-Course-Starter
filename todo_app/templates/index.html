@@ -2,17 +2,45 @@
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
-  <div class="jumbotron">
-    <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
-  </div>
+<div class="jumbotron">
+  <h1 class="display-4">To-Do App</h1>
+  <p class="lead">Just another to-do app.</p>
+</div>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Items</h2>
-      <ul class="list-group mb-4">
-        <!-- List the todo items here -->
-      </ul>
+<div class="row">
+  <div class="col-md-12">
+    <h2>Items</h2>
+    <div class="row">
+      <div class="col-md-12">
+        <form action="/items" method="post" class="form-group">
+          <div class="input-group mb-3">
+            <input class="form-control" type="text" name="item-title" id="item-title"
+              placeholder="Enter the title of the item to be added here" required>
+            <div class="input-group-append">
+              <input class="btn btn-primary" type="submit" value="Add Item">
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
+    <ul class="list-group mb-4">
+      {% for item in items %}
+      <li class="list-group-item d-flex justify-content-between align-items-start">
+        <form action="/items/{{ item.id }}" method="post" class="ms-2 me-auto form-check">
+          <input class="form-check-input" type="checkbox" name="operation" id="item-status" value="UPDATE"
+            onclick="submit()">
+          {% if item.status == 'Not Started' %}
+          <label class="form-check-label" for="item-status">{{ item.title }}</label>
+          {% else %}
+          <label class="form-check-label text-muted" for="item-status"><del>{{ item.title }}</del></label>
+          {% endif %}
+        </form>
+        <form action="/items/{{ item.id }}" method="post" class="input-group-prepend">
+          <input class="btn btn-danger" type="submit" name="operation" value="DELETE">
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
+</div>
 {% endblock %}
