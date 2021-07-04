@@ -2,7 +2,26 @@ import os
 
 
 class Config:
+
+    def raise_error_if_omitted(env_vars):
+        for env_var in env_vars:
+            if not env_var:
+                raise ValueError(
+                    f"No {env_var} set for Flask application. Did you follow the setup instructions?")
+
     """Base configuration variables."""
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    if not SECRET_KEY:
-        raise ValueError("No SECRET_KEY set for Flask application. Did you follow the setup instructions?")
+    TRELLO_DEVELOPER_API_KEY = os.environ.get('TRELLO_DEVELOPER_API_KEY')
+    TRELLO_TOKEN = os.environ.get('TRELLO_TOKEN')
+    TRELLO_BOARD_ID = os.environ.get('TRELLO_BOARD_ID')
+    TRELLO_NOT_STARTED_LIST_ID = os.environ.get('TRELLO_NOT_STARTED_LIST_ID')
+    TRELLO_COMPLETED_LIST_ID = os.environ.get('TRELLO_COMPLETED_LIST_ID')
+
+    raise_error_if_omitted([
+        SECRET_KEY,
+        TRELLO_DEVELOPER_API_KEY,
+        TRELLO_TOKEN,
+        TRELLO_BOARD_ID,
+        TRELLO_NOT_STARTED_LIST_ID,
+        TRELLO_COMPLETED_LIST_ID
+    ])
