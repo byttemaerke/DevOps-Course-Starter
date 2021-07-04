@@ -36,8 +36,9 @@ Please note that the following mandatory environment variables must be set in or
 * [TRELLO_DEVELOPER_API_KEY](https://trello.com/app-key)
 * [TRELLO_TOKEN](https://trello.com/app-key)
 * [TRELLO_BOARD_ID](https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525)
-* [TRELLO_NOT_STARTED_LIST_ID](https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525)
-* [TRELLO_COMPLETED_LIST_ID](https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525)
+* [TRELLO_TODO_LIST_ID](https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525)
+* [TRELLO_DOING_LIST_ID](https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525)
+* [TRELLO_DONE_LIST_ID](https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525)
 
 ## Running the App
 

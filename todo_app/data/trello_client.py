@@ -8,8 +8,9 @@ BASE_URL = 'https://api.trello.com/1'
 KEY = Config.TRELLO_DEVELOPER_API_KEY
 TOKEN = Config.TRELLO_TOKEN
 BOARD_ID = Config.TRELLO_BOARD_ID
-NOT_STARTED_LIST_ID = Config.TRELLO_NOT_STARTED_LIST_ID
-COMPLETED_LIST_ID = Config.TRELLO_COMPLETED_LIST_ID
+TODO_LIST_ID = Config.TRELLO_TODO_LIST_ID
+DOING_LIST_ID = Config.TRELLO_DOING_LIST_ID
+DONE_LIST_ID = Config.TRELLO_DONE_LIST_ID
 BOARD_SPECIFIC_CARDS_URL = f'{BASE_URL}/boards/{BOARD_ID}/cards'
 QUERY = {'key': KEY, 'token': TOKEN}
 CARDS_URL = f'{BASE_URL}/cards'
@@ -24,7 +25,7 @@ def get_items():
 
 
 def add_item(title):
-    return requests.post(CARDS_URL, params={**QUERY, **{LIST_ID_KEY: NOT_STARTED_LIST_ID, NAME_KEY: title}}).status_code == 200
+    return requests.post(CARDS_URL, params={**QUERY, **{LIST_ID_KEY: TODO_LIST_ID, NAME_KEY: title}}).status_code == 200
 
 
 def update_item_whose_id_is(id, status):
@@ -32,8 +33,7 @@ def update_item_whose_id_is(id, status):
         "PUT",
         append_id_to_url(CARDS_URL, id),
         headers=HEADERS,
-        params={**QUERY, **{LIST_ID_KEY: COMPLETED_LIST_ID if status ==
-                            Status.NOT_STARTED.name else NOT_STARTED_LIST_ID}}
+        params={**QUERY, **{LIST_ID_KEY: DOING_LIST_ID if status == Status.TODO.name else DONE_LIST_ID}}
     ).status_code == 200
 
 

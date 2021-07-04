@@ -22,9 +22,9 @@ def create_item():
     return redirect_to_index()
 
 
-@app.route('/items/<id>/update', methods=['POST'])
-def update_item(id):
-    trello_client.update_item_whose_id_is(id, request.form.get(ITEM_STATUS_KEY))
+@app.route('/items/<id>/status/<status>/progress', methods=['POST'])
+def update_item(id, status):
+    trello_client.update_item_whose_id_is(id, status)
     return redirect_to_index()
 
 

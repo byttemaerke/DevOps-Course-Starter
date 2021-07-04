@@ -2,18 +2,19 @@
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-  <h1 class="display-4">To-Do App</h1>
-  <p class="lead">Just another to-do app.</p>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <h2>Items</h2>
-    <div class="row">
-      <div class="col-md-12">
+<div class="accordion" id="accordionPanelsStayOpen">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse"
+        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        To-Do
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+      aria-labelledby="panelsStayOpen-headingOne">
+      <div class="accordion-body">
         <form action="/items" method="post" class="form-group">
-          <div class="input-group mb-3">
+          <div class="input-group">
             <input class="form-control" type="text" name="item-title" id="item-title"
               placeholder="Enter the title of the item to be added here" required>
             <div class="input-group-append">
@@ -21,26 +22,83 @@
             </div>
           </div>
         </form>
+
+        <ul class="list-group list-group-flush">
+          {% for item in items %}
+          {% if item.status == 'TODO' %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ item.title }}
+            <div class="btn-group">
+              <form action="/items/{{ item.id }}/status/{{ item.status }}/progress" method="post" class="form-check">
+                <input class="btn btn-success btn-sm" type="submit" name="operation" value="Start">
+              </form>
+              <form action="/items/{{ item.id }}/delete" method="post" class="form-check">
+                <input class="btn btn-danger btn-sm" type="submit" name="operation" value="Delete">
+              </form>
+            </div>
+          </li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+
       </div>
     </div>
-    <ul class="list-group mb-4">
-      {% for item in items %}
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-        <form action="/items/{{ item.id }}/update" method="post" class="ms-2 me-auto form-check">
-          <input class="form-check-input" type="checkbox" name="item-status" id="item-status" value="{{ item.status }}"
-            onclick="submit()">
-          {% if item.status == 'NOT_STARTED' %}
-          <label class="form-check-label" for="item-status">{{ item.title }}</label>
-          {% else %}
-          <label class="form-check-label text-muted"><del>{{ item.title }}</del></label>
-          {% endif %}
-        </form>
-        <form action="/items/{{ item.id }}/delete" method="post" class="ms-2 me-auto form-check">
-          <input class="btn btn-danger" type="submit" name="operation" value="Delete">
-        </form>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+          Doing
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
+        aria-labelledby="panelsStayOpen-headingTwo">
+        <div class="accordion-body">
+          <ul class="list-group list-group-flush">
+            {% for item in items %}
+            {% if item.status == 'DOING' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ item.title }}
+              <div class="btn-group">
+                <form action="/items/{{ item.id }}/status/{{ item.status }}/progress" method="post" class="form-check">
+                  <input class="btn btn-success btn-sm" type="submit" name="operation" value="Complete">
+                </form>
+                <form action="/items/{{ item.id }}/delete" method="post" class="form-check">
+                  <input class="btn btn-danger btn-sm" type="submit" name="operation" value="Delete">
+                </form>
+              </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+          data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+          aria-controls="panelsStayOpen-collapseThree">
+          Done
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+        aria-labelledby="panelsStayOpen-headingThree">
+        <div class="accordion-body">
+          <ul class="list-group list-group-flush">
+            {% for item in items %}
+            {% if item.status == 'DONE' %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ item.title }}
+              <form action="/items/{{ item.id }}/delete" method="post" class="form-check">
+                <input class="btn btn-danger btn-sm" type="submit" name="operation" value="Delete">
+              </form>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
