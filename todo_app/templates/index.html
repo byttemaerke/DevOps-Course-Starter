@@ -1,104 +1,67 @@
 {% extends "layout.html" %}
+
+{% macro display_task(task) -%}
+<li class="list-group-item d-flex justify-content-between align-items-center" data-test-class="task">
+  {{ task.name }}
+  <div class="btn-group">
+    {% if task.status == 'Done' %}
+    {% set operation = 'Uncomplete' %}
+    {% set endpoint = 'todo.uncomplete_task' %}
+    {% elif task.status == 'To Do' %}
+    {% set operation = 'Do' %}
+    {% set endpoint = 'todo.do_task' %}
+    {% else %}
+    {% set operation = 'Complete' %}
+    {% set endpoint = 'todo.complete_task' %}
+    {% endif %}
+    <a href="{{ url_for(endpoint, task_id=task.id) }}" class="btn btn-sm btn-outline-success">{{ operation }}</a>
+    <a href="{{ url_for('todo.delete_task', task_id=task.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+  </div>
+</li>
+{%- endmacro %}
+
+{% macro display_tasks(title, tasks, test_id) -%}
+<div class="col" data-test-id="{{ test_id }}">
+  <h2 class="fs-2 fw-light">{{ title }}</h2>
+  <ul class="list-group list-group-flush">
+    {% for task in tasks %}
+    {{ display_task(task) }}
+    {% endfor %}
+  </ul>
+</div>
+{%- endmacro %}
+
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
-<div class="accordion" id="accordionPanelsStayOpen">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse"
-        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-        To-Do
-      </button>
-    </h2>
-    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-      aria-labelledby="panelsStayOpen-headingOne">
-      <div class="accordion-body">
-        <form action="/items" method="post" class="form-group">
-          <div class="input-group">
-            <input class="form-control" type="text" name="item-title" id="item-title"
-              placeholder="Enter the title of the item to be added here" required>
-            <div class="input-group-append">
-              <input class="btn btn-primary" type="submit" value="Add Item">
-            </div>
-          </div>
-        </form>
+<header class="container px-4 py-5">
+  <h1 class="fs-1 fw-light border-bottom">To-Do App</h1>
 
-        <ul class="list-group list-group-flush">
-          {% for item in items %}
-          {% if item.status == 'TODO' %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ item.title }}
-            <div class="btn-group">
-              <form action="/items/{{ item.id }}/status/{{ item.status }}/progress" method="post" class="form-check">
-                <input class="btn btn-success btn-sm" type="submit" name="operation" value="Start">
-              </form>
-              <form action="/items/{{ item.id }}/delete" method="post" class="form-check">
-                <input class="btn btn-danger btn-sm" type="submit" name="operation" value="Delete">
-              </form>
-            </div>
-          </li>
-          {% endif %}
-          {% endfor %}
-        </ul>
+  <form action="{{ url_for('todo.add_task') }}" method="POST" class="form-group">
+    <div class="input-group">
+      <input class="form-control" type="text" name="task" id="task-input" placeholder="Task" aria-label="Task"
+        data-test-id="task-input">
+      <div class="input-group-append">
+        <input class="btn btn-outline-primary" type="submit" value="Add Task">
+      </div>
+    </div>
+  </form>
+</header>
 
-      </div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-          data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
-          Doing
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
-        aria-labelledby="panelsStayOpen-headingTwo">
-        <div class="accordion-body">
-          <ul class="list-group list-group-flush">
-            {% for item in items %}
-            {% if item.status == 'DOING' %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              {{ item.title }}
-              <div class="btn-group">
-                <form action="/items/{{ item.id }}/status/{{ item.status }}/progress" method="post" class="form-check">
-                  <input class="btn btn-success btn-sm" type="submit" name="operation" value="Complete">
-                </form>
-                <form action="/items/{{ item.id }}/delete" method="post" class="form-check">
-                  <input class="btn btn-danger btn-sm" type="submit" name="operation" value="Delete">
-                </form>
-              </div>
-            </li>
-            {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-          data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-          aria-controls="panelsStayOpen-collapseThree">
-          Done
-        </button>
-      </h2>
-      <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
-        aria-labelledby="panelsStayOpen-headingThree">
-        <div class="accordion-body">
-          <ul class="list-group list-group-flush">
-            {% for item in items %}
-            {% if item.status == 'DONE' %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              {{ item.title }}
-              <form action="/items/{{ item.id }}/delete" method="post" class="form-check">
-                <input class="btn btn-danger btn-sm" type="submit" name="operation" value="Delete">
-              </form>
-            </li>
-            {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-    </div>
+<div class="container">
+  <div class="row">
+    {{ display_tasks('To-Do', model.to_do_tasks, 'to-do-list') }}
+    {{ display_tasks('Doing', model.doing_tasks, 'doing-list') }}
+
+    {% if model.should_show_all_done_tasks %}
+    {{ display_tasks('Done', model.done_tasks, 'done-list') }}
+    {% else %}
+    {{ display_tasks('Recently Completed', model.recent_done_tasks, 'recently-done-list') }}
+    <details>
+      {{ display_tasks('', model.older_done_tasks, 'older-done-list') }}
+      <summary>Older Tasks</summary>
+    </details>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
