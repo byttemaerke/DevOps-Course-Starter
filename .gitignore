@@ -121,3 +121,7 @@ env/
 
 ### Chromedriver ###
 chromedriver
+
+### Vagrant ###
+.vagrant
+logs.txt
