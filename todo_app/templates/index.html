@@ -1,46 +1,67 @@
 {% extends "layout.html" %}
+
+{% macro display_task(task) -%}
+<li class="list-group-item d-flex justify-content-between align-items-center" data-test-class="task">
+  {{ task.name }}
+  <div class="btn-group">
+    {% if task.status == 'Done' %}
+    {% set operation = 'Uncomplete' %}
+    {% set endpoint = 'todo.uncomplete_task' %}
+    {% elif task.status == 'To Do' %}
+    {% set operation = 'Do' %}
+    {% set endpoint = 'todo.do_task' %}
+    {% else %}
+    {% set operation = 'Complete' %}
+    {% set endpoint = 'todo.complete_task' %}
+    {% endif %}
+    <a href="{{ url_for(endpoint, task_id=task.id) }}" class="btn btn-sm btn-outline-success">{{ operation }}</a>
+    <a href="{{ url_for('todo.delete_task', task_id=task.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+  </div>
+</li>
+{%- endmacro %}
+
+{% macro display_tasks(title, tasks, test_id) -%}
+<div class="col" data-test-id="{{ test_id }}">
+  <h2 class="fs-2 fw-light">{{ title }}</h2>
+  <ul class="list-group list-group-flush">
+    {% for task in tasks %}
+    {{ display_task(task) }}
+    {% endfor %}
+  </ul>
+</div>
+{%- endmacro %}
+
 {% block title %}To-Do App{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-  <h1 class="display-4">To-Do App</h1>
-  <p class="lead">Just another to-do app.</p>
-</div>
+<header class="container px-4 py-5">
+  <h1 class="fs-1 fw-light border-bottom">To-Do App</h1>
 
-<div class="row">
-  <div class="col-md-12">
-    <h2>Items</h2>
-    <div class="row">
-      <div class="col-md-12">
-        <form action="/items" method="post" class="form-group">
-          <div class="input-group mb-3">
-            <input class="form-control" type="text" name="item-title" id="item-title"
-              placeholder="Enter the title of the item to be added here" required>
-            <div class="input-group-append">
-              <input class="btn btn-primary" type="submit" value="Add Item">
-            </div>
-          </div>
-        </form>
+  <form action="{{ url_for('todo.add_task') }}" method="POST" class="form-group">
+    <div class="input-group">
+      <input class="form-control" type="text" name="task" id="task-input" placeholder="Task" aria-label="Task"
+        data-test-id="task-input">
+      <div class="input-group-append">
+        <input class="btn btn-outline-primary" type="submit" value="Add Task">
       </div>
     </div>
-    <ul class="list-group mb-4">
-      {% for item in items %}
-      <li class="list-group-item d-flex justify-content-between align-items-start">
-        <form action="/items/{{ item.id }}/update" method="post" class="ms-2 me-auto form-check">
-          <input class="form-check-input" type="checkbox" name="item-status" id="item-status" value="{{ item.status }}"
-            onclick="submit()">
-          {% if item.status == 'NOT_STARTED' %}
-          <label class="form-check-label" for="item-status">{{ item.title }}</label>
-          {% else %}
-          <label class="form-check-label text-muted"><del>{{ item.title }}</del></label>
-          {% endif %}
-        </form>
-        <form action="/items/{{ item.id }}/delete" method="post" class="ms-2 me-auto form-check">
-          <input class="btn btn-danger" type="submit" name="operation" value="Delete">
-        </form>
-      </li>
-      {% endfor %}
-    </ul>
+  </form>
+</header>
+
+<div class="container">
+  <div class="row">
+    {{ display_tasks('To-Do', model.to_do_tasks, 'to-do-list') }}
+    {{ display_tasks('Doing', model.doing_tasks, 'doing-list') }}
+
+    {% if model.should_show_all_done_tasks %}
+    {{ display_tasks('Done', model.done_tasks, 'done-list') }}
+    {% else %}
+    {{ display_tasks('Recently Completed', model.recent_done_tasks, 'recently-done-list') }}
+    <details>
+      {{ display_tasks('', model.older_done_tasks, 'older-done-list') }}
+      <summary>Older Tasks</summary>
+    </details>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
